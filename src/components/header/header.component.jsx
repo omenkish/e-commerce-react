@@ -6,9 +6,7 @@ import { ReactComponent as Logo } from '../../assets//images/crown.svg';
 import { auth } from '../../firebase/firebase.utils';
 import './header.styles.scss';
 
-const Header =  ({ currentUser }) => {
-  console.log('currentUser :', currentUser);
-  return(
+const Header =  ({ currentUser }) => (
   <div className="header">
     <Link className="logo-container" to="/">
       <Logo className="logo"/>
@@ -24,10 +22,10 @@ const Header =  ({ currentUser }) => {
       }
     </div>
   </div>
-);}
+);
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser,
+const mapStateToProps = ({ user: { currentUser }}) => ({
+  currentUser,
 });
 
 export default connect(mapStateToProps)(Header);
