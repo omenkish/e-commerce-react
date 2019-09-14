@@ -1,5 +1,5 @@
-export default [
-  {
+export default {
+  hats: {
     id: 1,
     title: 'Hats',
     routeName: 'hats',
@@ -60,8 +60,8 @@ export default [
       }
     ]
   },
-  {
-    id: 2,
+  sneakers: {
+    id: 3,
     title: 'Sneakers',
     routeName: 'sneakers',
     items: [
@@ -115,8 +115,8 @@ export default [
       }
     ]
   },
-  {
-    id: 3,
+  jackets: {
+    id: 2,
     title: 'Jackets',
     routeName: 'jackets',
     items: [
@@ -152,7 +152,7 @@ export default [
       }
     ]
   },
-  {
+  womens: {
     id: 4,
     title: 'Womens',
     routeName: 'womens',
@@ -201,7 +201,7 @@ export default [
       }
     ]
   },
-  {
+  mens: {
     id: 5,
     title: 'Mens',
     routeName: 'mens',
@@ -244,4 +244,4 @@ export default [
       }
     ]
   }
-];
+};
