@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 
-import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
-import './sign-up.styles.scss';
+import { signUpStart } from '../../redux/user/user.actions';
+import { selectUserError } from '../../redux/user/user.selectors';
 
-export default class SignUp extends Component {
+import './sign-up.styles.scss';
+ class SignUp extends Component {
   constructor(){
     super();
 
@@ -25,29 +28,16 @@ export default class SignUp extends Component {
   handleSubmit = async event => {
     event.preventDefault();
 
-    const { displayName, email, password, confirmPassword } = this.state;
+    const { email, displayName, password, confirmPassword } = this.state;
+    const { signUpStart } = this.props;
 
     if(password !== confirmPassword) {
       this.setState({
-        confirmPasswordError: 'Passwords don\'t match'
+        confirmPasswordError: 'Passwords do not match!'
       });
-      alert("passwords don't match");
       return;
     }
-
-    try {
-      const { user } = await auth.createUserWithEmailAndPassword(email, password);
-      createUserProfileDocument(user, { displayName });
-
-      this.setState({
-        displayName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
-    } catch (error) {
-      console.error(error);
-    }
+      signUpStart({ email, password, displayName });
   }
 
   handleChange = event => {
@@ -56,11 +46,12 @@ export default class SignUp extends Component {
   }
 
   render() {
-    const { displayName, email, password, confirmPassword } = this.state;
+    const { displayName, email, password, confirmPassword, confirmPasswordError } = this.state;
+    const { error } = this.props;
     return(
       <div className="sign-up">
         <h2 className="title">I do not have an account</h2>
-        <span className="name">Sign up wiht your email and password</span>
+        <span className="name">Sign up with your email and password</span>
         <form 
           className="sign-up-form"
           onSubmit={this.handleSubmit}
@@ -82,7 +73,7 @@ export default class SignUp extends Component {
             label='Email'
             required
           />
-
+          {(error && error.code === 'auth/email-already-in-use') && (<span className="error">{error.message}</span>)}
           <FormInput
             type='password'
             name='password'
@@ -100,10 +91,22 @@ export default class SignUp extends Component {
             label='Confirm Password'
             required
           />
+          {confirmPasswordError && (<span className="error">{confirmPasswordError}</span>)}
 
           <CustomButton type='submit' >SIGN UP</CustomButton>
         </form>
+
       </div>
     );
   }
-}
+};
+
+const mapStateToProps = createStructuredSelector({
+  error: selectUserError,
+});
+
+const mapDispatchToProps = dispatch => ({
+  signUpStart: (userCredentials) => dispatch(signUpStart(userCredentials)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
